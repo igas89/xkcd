@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "types/*": ["src/types/*"],
+      "constants": ["src/constants"],
+      "constants/*": ["src/constants/*"],
+      "themes": ["src/themes"],
+      "themes/*": ["src/themes/*"],
+      "api": ["src/api"],
+      "store": ["src/store"],
+      "actions": ["src/store/actions"],
+      "actions/*": ["src/store/actions/*"],
+      "reducers": ["src/store/reducers"],
+      "reducers/*": ["src/store/reducers/*"],
+      "helpers/*": ["src/helpers/*"],
+      "hooks/*": ["src/hooks/*"],
+      "components/*": ["src/components/*"],
+      "pages/*": ["src/pages/*"],
+      "middleware": ["src/middleware"],
+      "middleware/*": ["src/middleware/*"]
+    }
+  }
+}
