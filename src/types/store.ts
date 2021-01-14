@@ -1,5 +1,6 @@
 import { rootReducer } from 'store';
 
+export type ActionType = string | undefined | null
 export type ActionDispatch = { type: string };
 export type RootState = ReturnType<typeof rootReducer>;
 
@@ -11,7 +12,7 @@ export interface ActionTypes<Payload, Response> {
 }
 
 export interface InitialState<Request, Response> {
-    action: string | undefined | null;
+    action: ActionType;
     error: ActionError;
     requestData: Request;
     responseData: Response;
