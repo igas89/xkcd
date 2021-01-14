@@ -1,42 +1,34 @@
 
+import { AxiosRequestConfig } from 'axios';
 import { Middleware } from 'redux';
-import Api, { API_REQUEST, ApiAction } from 'api';
 
-const ApiMiddleWare: Middleware = (store) => (next) => (action: ApiAction) => {
-    console.group('ApiMiddleWare');
-    console.log('store:', store);
-    console.log('action:', action);
-    console.groupEnd();
+import Api, { API_REQUEST } from 'api';
+import { ApiAction } from 'types/api';
+import { ComicsData } from 'reducers/comicsReducer';
 
+const ApiMiddleWare: Middleware = (store) => (next) => (action: ApiAction<AxiosRequestConfig>) => {
     if (action.type !== API_REQUEST) {
-        next(action);
+        return next(action);
     }
 
-    const [Request, Response, Failure] = action.requestData.type;
+    const { type, payload } = action.requestData;
+    const [Request, Response, Failure] = type;
 
-    next({
-        type: Request,
-        payload: action.requestData.payload,
-    })
+    next({ type: Request, payload });
 
-    Api({
-        url: 'https://xkcd.com/info.0.json'
-    }).then((response) => {
-        console.log('response:', response);
-        next({
-            type: 'COMICS_SUCCESS',
-            // response: action.requestData.type
-            response: action.requestData.payload
+    Api<ComicsData>(payload)
+        .then((response) => {
+            next({
+                type: Response,
+                response: response
+            })
         })
-    })
-    // setTimeout(() => {
-    //     next({
-    //         type: 'COMICS_SUCCESS',
-    //         // response: action.requestData.type
-    //         response: action.requestData.payload
-    //     })
-    // }, 2500)
-    // return next(action);
+        .catch(error => {
+            next({
+                type: Failure,
+                error: error,
+            })
+        })
 }
 
 export default ApiMiddleWare;
