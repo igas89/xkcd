@@ -5,9 +5,11 @@ import {
     COMICS_FAILURE,
 } from 'actions/comicsAction';
 
-interface ComicsData {
+import { COMICS_COUNT_SUCCESS } from 'actions/comicsCountAction';
+
+export interface ComicsData {
     month: string;
-    num: string;
+    num: number;
     link: string;
     year: string;
     news: string;
@@ -43,11 +45,12 @@ export const comicsReducer = (
                 error: INITIAL_STATE.error,
             }
         }
-        case COMICS_SUCCESS: {
+        case COMICS_SUCCESS:
+        case COMICS_COUNT_SUCCESS: {
             return {
                 ...state,
-                action: action.type,
-                responseData: action.response || {}
+                action: COMICS_SUCCESS,
+                responseData: action.response || {},
             }
         }
         case COMICS_FAILURE: {
