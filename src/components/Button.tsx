@@ -14,10 +14,12 @@ const StyledButton = styled.button`
     line-height: 1.2em;
     color: ${({ theme }) => theme.colors.font};
     cursor: pointer;
+    opacity: 1;
 
     ${({ theme: { transition } }) => css`
         transition: color ${transition}, 
-        box-shadow ${transition};
+        box-shadow ${transition},
+        opacity: ${transition};
     `};
 
     &:disabled {
