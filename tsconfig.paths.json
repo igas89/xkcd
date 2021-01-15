@@ -5,6 +5,7 @@
       "types/*": ["src/types/*"],
       "constants": ["src/constants"],
       "constants/*": ["src/constants/*"],
+      "context/*": ["src/context/*"],
       "themes": ["src/themes"],
       "themes/*": ["src/themes/*"],
       "api": ["src/api"],
