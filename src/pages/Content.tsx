@@ -10,17 +10,7 @@ import { ComicsData } from 'reducers/comicsReducer';
 import { useComicsSelector } from 'hooks/useComicsSelector';
 import { useComicsCountSelector } from 'hooks/useComicsCountSelector';
 
-const animWave = keyframes`
-    0% {
-        transform: translateX(-100%);
-    }
-    60% {
-        transform: translateX(100%);
-    }
-    100% {
-        transform: translateX(100%);
-    }
-`
+import Skeleton from 'components/Skeleton';
 
 const StyledContainer = styled.div`
     min-height: 250px;
@@ -33,44 +23,6 @@ const StyledHeader = styled.div`
     padding: 10px 10px 0;
     font-size: 15px;
 `;
-
-interface LoadingMixin {
-    height?: string;
-    width?: string;
-    isLoading?: boolean;
-}
-
-const StyledSkeleton = styled.div<LoadingMixin>`
-    ${({ isLoading, height, width }) => isLoading
-        ? css<LoadingMixin>`
-            overflow: hidden;
-            position: relative;
-            height: ${height || '20px'};
-            width: ${width || '150px'};
-            background-color: rgba(0, 0, 0, 0.11);
-            border-radius: 4px;
-            &+& {
-                margin-top: 5px;
-            }
-
-            & * {
-                display: none;
-            }
-
-            &::after {
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                content: '';
-                background: linear-gradient(45deg, #23262c 30%, #2c3038 90%);
-                position: absolute;
-                animation: ${animWave} 1.6s linear 0.5s infinite;
-                transform: translateX(-100%);
-            }
-        `: ''
-    }
-`
 
 const StyledHeaderItem = styled.div`
     height: 20px;
@@ -190,34 +142,34 @@ const Content: FC = () => {
         <StyledContainer>
             <StyledHeader>
                 <StyledHeaderItem>
-                    <StyledSkeleton isLoading={isLoading}>
+                    <Skeleton isLoading={isLoading}>
                         {state.current}
-                    </StyledSkeleton>
+                    </Skeleton>
                 </StyledHeaderItem>
                 <StyledTitle>
-                    <StyledSkeleton isLoading={isLoading} width='200px'>
+                    <Skeleton isLoading={isLoading} width='200px'>
                         {state.comicsData?.title}
-                    </StyledSkeleton>
+                    </Skeleton>
                 </StyledTitle>
                 <StyledHeaderItem>
-                    <StyledSkeleton isLoading={isLoading}>
+                    <Skeleton isLoading={isLoading}>
                         {state.date}
-                    </StyledSkeleton>
+                    </Skeleton>
                 </StyledHeaderItem>
             </StyledHeader>
             <StyledBody>
                 <StyledTranscript>
-                    <StyledSkeleton isLoading={isLoading} width='100%' />
-                    <StyledSkeleton isLoading={isLoading} width='100%' />
-                    <StyledSkeleton isLoading={isLoading} width='90%' />
-                    <StyledSkeleton isLoading={isLoading} width='80%' />
+                    <Skeleton isLoading={isLoading} width='100%' />
+                    <Skeleton isLoading={isLoading} width='100%' />
+                    <Skeleton isLoading={isLoading} width='90%' />
+                    <Skeleton isLoading={isLoading} width='80%' />
                     {state.comicsData?.transcript}
                 </StyledTranscript>
-                <StyledSkeleton isLoading={isLoading} height='250px' width='100%' >
+                <Skeleton isLoading={isLoading} height='250px' width='100%' >
                     <StyledImage isLoading={isLoading}>
                         <img src={state.img} alt={state.comicsData?.alt} onLoad={onLoad} />
                     </StyledImage>
-                </StyledSkeleton>
+                </Skeleton>
             </StyledBody>
         </StyledContainer>
     )
