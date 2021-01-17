@@ -1,3 +1,4 @@
+import React, { FC, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components/macro';
 
 export const animWave = keyframes`
@@ -13,12 +14,18 @@ export const animWave = keyframes`
 `
 
 export interface SkeletonProps {
-    height?: string;
-    width?: string;
+    count?: number;
+    height?: string | string[];
+    width?: string | string[];
     isLoading?: boolean;
 }
 
-const Skeleton = styled.div<SkeletonProps>`
+export interface StyledSkeletonProps extends Pick<SkeletonProps, 'isLoading'> {
+    height?: string;
+    width?: string;
+}
+
+const StyledSkeleton = styled.div<StyledSkeletonProps>`
     ${({ isLoading, height, width }) => isLoading
         ? css<SkeletonProps>`
             overflow: hidden;
@@ -49,5 +56,35 @@ const Skeleton = styled.div<SkeletonProps>`
         `: ''
     }
 `
+
+type SkeletonState = React.ReactNode[];
+
+const Skeleton: FC<SkeletonProps> = (props) => {
+    const [items, setItems] = useState<SkeletonState>([]);
+
+    useEffect(() => {
+        const { count = 1, children, isLoading, height, width } = props;
+
+        const items = Array.from({ length: count }, (_, index) => {
+            const itemHeight = Array.isArray(height)
+                ? height[index] || height[0]
+                : height;
+
+            const itemsWidth = Array.isArray(width)
+                ? width[index] || width[0]
+                : width;
+
+            return (
+                <StyledSkeleton key={index} isLoading={isLoading} height={itemHeight} width={itemsWidth}>
+                    {children}
+                </StyledSkeleton>
+            )
+        })
+
+        setItems(items);
+    }, [props]);
+
+    return <>{items}</>;
+}
 
 export default Skeleton;

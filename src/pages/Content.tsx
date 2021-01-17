@@ -185,10 +185,7 @@ const Content: FC = () => {
             </StyledHeader>
             <StyledBody>
                 <StyledTranscript>
-                    <Skeleton isLoading={isLoading} width='100%' />
-                    <Skeleton isLoading={isLoading} width='100%' />
-                    <Skeleton isLoading={isLoading} width='90%' />
-                    <Skeleton isLoading={isLoading} width='80%' />
+                    <Skeleton isLoading={isLoading} count={4} width={['100%', '90%', '95%', '80%']} />
                     {state.comicsData?.transcript}
                 </StyledTranscript>
                 <Skeleton isLoading={isLoading} height='250px' width='100%' >
