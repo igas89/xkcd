@@ -1,8 +1,8 @@
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
-import styled, { css, keyframes } from 'styled-components/macro';
+import styled from 'styled-components/macro';
 
 import { COMICS_REQUEST, COMICS_SUCCESS, COMICS_FAILURE } from 'actions/comicsAction';
-import { COMICS_COUNT_REQUEST, COMICS_COUNT_SUCCESS, COMICS_COUNT_FAILURE } from 'actions/comicsCountAction';
+import { COMICS_COUNT_REQUEST, COMICS_COUNT_SUCCESS } from 'actions/comicsCountAction';
 
 import { LoadingContext } from 'context/loadingContext';
 import { ComicsData } from 'reducers/comicsReducer';
@@ -10,6 +10,7 @@ import { ComicsData } from 'reducers/comicsReducer';
 import { useComicsSelector } from 'hooks/useComicsSelector';
 import { useComicsCountSelector } from 'hooks/useComicsCountSelector';
 
+import ErrorContent from 'pages/ErrorContent';
 import Skeleton from 'components/Skeleton';
 
 const StyledContainer = styled.div`
@@ -64,11 +65,12 @@ interface ContentState {
     isComicsLoading: boolean;
     isComicsCountLoading: boolean;
     comicsData: ComicsData | null;
-
     count: number | null;
     current: string;
     date: string | null;
     img: string;
+    isError: boolean;
+    errorMessage: string;
 }
 
 const Content: FC = () => {
@@ -84,6 +86,8 @@ const Content: FC = () => {
         current: '',
         date: null,
         img: '',
+        isError: false,
+        errorMessage: '',
     });
 
     const onLoad = useCallback(() => {
@@ -104,20 +108,32 @@ const Content: FC = () => {
             setState(prevState => ({
                 ...prevState,
                 isComicsLoading: true,
+                isError: false,
                 img: '',
                 current: '',
                 date: '',
-                comicsData: null
+                comicsData: null,
+                errorMessage: '',
             }))
         }
 
-        if (comicsAction === COMICS_SUCCESS) {
+        if (state.isComicsLoading && comicsAction === COMICS_SUCCESS) {
             setState(prevState => ({
                 ...prevState,
                 img: comicsData.img,
             }))
         }
-    }, [comicsAction, comicsData, state.isComicsLoading])
+        if (state.isComicsLoading && comicsAction === COMICS_FAILURE) {
+            setLoading(false);
+
+            setState(prevState => ({
+                ...prevState,
+                isError: true,
+                isComicsLoading: false,
+                errorMessage: 'Not found comics :(',
+            }))
+        }
+    }, [comicsAction, comicsData, setLoading, state.isComicsLoading])
 
     useEffect(() => {
         if (comicsCountAction === COMICS_COUNT_REQUEST) {
@@ -138,6 +154,15 @@ const Content: FC = () => {
     }, [comicsCountAction, comicsCountData, setLoading, state.isComicsCountLoading])
 
     const isLoading = contextLoading || state.isComicsLoading;
+
+
+    if (state.isError) {
+        return (
+            <ErrorContent>
+                {state.errorMessage}
+            </ErrorContent>
+        )
+    }
 
     return (
         <StyledContainer>
