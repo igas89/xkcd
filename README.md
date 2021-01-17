@@ -5,14 +5,17 @@
 #### Используемый стэк:
 * Typesript
 * React
+    * react-dom
+    * react-redux
+    * react-scripts
 * Redux
     * react-redux
     * redux-thunk
-* Styled Componets
+* Styled Components
 * Axios
 
 ---
-#### Планируется добавить
+#### Планируется добавить:
 * actionCreator
 * пагинацию
 * модальное окно для просмотра масшатбируемых картинок
