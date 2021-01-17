@@ -6,10 +6,9 @@
 * Typesript
 * React
     * react-dom
-    * react-redux
     * react-scripts
-* Redux
     * react-redux
+* Redux
     * redux-thunk
 * Styled Components
 * Axios
