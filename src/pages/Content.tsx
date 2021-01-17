@@ -56,6 +56,7 @@ const StyledImage = styled.div<{ isLoading: boolean }>`
         border-radius: 4px;
         box-shadow: 0px 0px 5px 5px #1d2026;
         box-sizing: border-box;
+        background-color: #ffffff;
     }
 `;
 

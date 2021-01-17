@@ -11,8 +11,8 @@ export interface ApiRequestData<T> {
 }
 
 export interface ApiRequestConfig<T> extends Omit<AxiosRequestConfig, 'url' | 'baseURL'> {
-    params?: T,
-    data?: T,
+    params?: T;
+    data?: T;
 }
 
 export interface ApiProps extends RequestInit {
