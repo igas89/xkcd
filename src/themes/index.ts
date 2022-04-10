@@ -12,5 +12,5 @@ const themes = {
     transition: '0.3s ease-in-out'
 }
 
-export type ThemeType = typeof themes
+export type BaseTheme = typeof themes
 export default themes;

@@ -1,7 +1,6 @@
 import { createGlobalStyle } from 'styled-components/macro';
-import { ThemeType } from 'themes';
 
-const GlobalStyle = createGlobalStyle<{ theme: ThemeType }>`
+const GlobalStyle = createGlobalStyle`
     html {
         background-color: ${({ theme }) => theme.colors.background};
     }
