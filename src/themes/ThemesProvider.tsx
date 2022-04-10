@@ -5,7 +5,7 @@ import themes from './index';
 
 const ThemesProvider: FC = ({ children }) => (
     <ScThemesProvider theme={themes}>
-        {children}
+        <>{children}</>
     </ScThemesProvider>
 );
 
