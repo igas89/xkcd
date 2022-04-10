@@ -2,6 +2,8 @@
 
 ### Редизайн сайта [xkcd](https://xkcd.com/)
 
+### Demo [Redesign xkcd](https://xkcd-eosin.vercel.app/)
+
 #### Используемый стэк:
 * Typesript
 * React
