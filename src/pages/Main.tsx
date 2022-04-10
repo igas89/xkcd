@@ -8,30 +8,30 @@ import Content from 'pages/Content';
 import { LoadingContext, LoadingContextType } from 'context/loadingContext';
 
 const StyledContainer = styled.div`
-    display: flex;
-    flex-flow: column nowrap;
-    width: 900px;
-    margin: 0 auto;
-    box-shadow: 1px 3px 5px 3px #1d2026;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 900px;
+  margin: 0 auto;
+  box-shadow: 1px 3px 5px 3px #1d2026;
 `;
 
 const Main: FC = () => {
-    const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
-    const providerValues: LoadingContextType = {
-        isLoading,
-        setLoading,
-    }
-    
-    return (
-        <LoadingContext.Provider value={providerValues}>
-            <StyledContainer>
-                <Header />
-                <Navigation />
-                <Content />
-            </StyledContainer>
-        </LoadingContext.Provider>
-    )
+  const providerValues: LoadingContextType = {
+    isLoading,
+    setLoading,
+  };
+
+  return (
+    <LoadingContext.Provider value={providerValues}>
+      <StyledContainer>
+        <Header />
+        <Navigation />
+        <Content />
+      </StyledContainer>
+    </LoadingContext.Provider>
+  );
 };
 
 export default Main;

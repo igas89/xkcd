@@ -1,7 +1,8 @@
-import { createContext } from 'react'
+import { createContext } from 'react';
 
 export interface LoadingContextType {
-    isLoading: boolean;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 export const LoadingContext = createContext<LoadingContextType>({} as LoadingContextType);

@@ -8,15 +8,15 @@ import ApiMiddleWare from 'middleware/ApiMiddleWare';
 const createStoreWithMiddleware = applyMiddleware(thunk, ApiMiddleWare)(createStore);
 const rootReducer = combineReducers(allReducers);
 const store = createStoreWithMiddleware(
-    rootReducer,
-    (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__(),
+  rootReducer,
+  (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__(),
 );
 
 const actionDispatch = (type: ActionDispatch): ActionDispatch => store.dispatch(type);
 
 export {
-    actionDispatch,
-    rootReducer,
+  actionDispatch,
+  rootReducer,
 };
 
 export default store;
