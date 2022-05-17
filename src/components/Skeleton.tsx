@@ -18,6 +18,7 @@ export interface SkeletonProps {
   height?: string | string[];
   width?: string | string[];
   isLoading?: boolean;
+  clearContent?: boolean;
 }
 
 export interface StyledSkeletonProps extends Pick<SkeletonProps, 'isLoading'> {
@@ -25,7 +26,7 @@ export interface StyledSkeletonProps extends Pick<SkeletonProps, 'isLoading'> {
   width?: string;
 }
 
-const StyledSkeleton = styled.div<StyledSkeletonProps>`
+const Container = styled.div<StyledSkeletonProps>`
   ${({ isLoading, height, width }) => isLoading
     ? css<SkeletonProps>`
       overflow: hidden;
@@ -67,6 +68,7 @@ const Skeleton: FC<SkeletonProps> = ({
   isLoading,
   height,
   width,
+  clearContent = true,
 }) => {
   const [items, setItems] = useState<SkeletonState>([]);
 
@@ -81,14 +83,14 @@ const Skeleton: FC<SkeletonProps> = ({
         : width;
 
       return (
-        <StyledSkeleton
+        <Container
           key={index}
           isLoading={isLoading}
           height={itemHeight}
           width={itemsWidth}
         >
-          {children}
-        </StyledSkeleton>
+          {isLoading && clearContent ? null : children}
+        </Container>
       );
     });
 
@@ -97,6 +99,7 @@ const Skeleton: FC<SkeletonProps> = ({
     count,
     children,
     isLoading,
+    clearContent,
     height,
     width,
   ]);

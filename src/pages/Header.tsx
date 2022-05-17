@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import styled from 'styled-components/macro';
 
-const StyledContainer = styled.div`
+const Container = styled.div`
   display: flex;
   padding: 10px;
   background: ${({ theme }) => theme.colors.white};
 `;
 
-const StyledTitle = styled.div`
+const Title = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -24,7 +24,7 @@ const StyledTitle = styled.div`
   }
 `;
 
-const StyledImage = styled.div`
+const Image = styled.div`
   background: url('/static/assets/logo.png') center/cover no-repeat;
   width: 185px;
   height: 83px;
@@ -32,13 +32,15 @@ const StyledImage = styled.div`
 `;
 
 const Header: FC = () => (
-  <StyledContainer >
-    <StyledImage />
-    <StyledTitle>
+  <Container >
+    <a href='/'>
+      <Image />
+    </a>
+    <Title>
       <p>A webcomic of romance, sarcasm,</p>
       <p>math, and language.</p>
-    </StyledTitle>
-  </StyledContainer>
+    </Title>
+  </Container>
 );
 
 export default Header;

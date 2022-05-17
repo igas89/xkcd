@@ -1,28 +1,31 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { createAction } from '@reduxjs/toolkit';
 
-import { ApiAction, ApiRequestData } from 'types/api';
+import {
+  ApiAxiosParams,
+  ApiActionPayload,
+} from 'interfaces/api';
 
 export const API_REQUEST = 'API_REQUEST';
-const API_URL = 'https://getxkcd.now.sh/api/comic';
+const API_URL = 'https://getxkcd.now.sh';
 
-export const apiAction = <T>(requestData: ApiRequestData<T>): ApiAction<T> => ({
-  type: API_REQUEST,
-  requestData,
-});
+export const apiAction = createAction(API_REQUEST, (payload: ApiActionPayload) => ({
+  payload
+}));
 
-export default async function Api<T>({
+export default async function Api({
   method,
   headers,
+  endpoint,
   ...props
-}: AxiosRequestConfig): Promise<T> {
+}: ApiAxiosParams): Promise<unknown> {
   const config: AxiosRequestConfig = {
     ...props,
-    baseURL: API_URL,
+    baseURL: `${API_URL}${endpoint}`,
     method: method || 'GET',
     headers: {
-      'Accept': 'application/json',
       'Content-Type': 'application/json',
-      ...(headers ?? {}),
+      ...(headers || {}),
     },
   };
 
@@ -35,10 +38,7 @@ export default async function Api<T>({
 
   instance.interceptors.response.use(
     (response) => response,
-    (error: AxiosError) => Promise.reject({
-      code: error.response?.status || 404,
-      message: `Ошибка в запросе ${error.message}`,
-    }),
+    (error) => Promise.reject(error),
   );
 
   const response = await instance(config);

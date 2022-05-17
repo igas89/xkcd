@@ -1,35 +1,46 @@
 
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError } from 'axios';
 import { Middleware } from 'redux';
 
-import Api, { API_REQUEST } from 'api';
-import { ApiAction } from 'types/api';
-import { ComicsData } from 'reducers/comicsReducer';
+import Api, { API_REQUEST, apiAction } from 'api';
+import { RootState } from 'store';
 
-const ApiMiddleWare: Middleware = (store) =>
-  (next) => (action: ApiAction<AxiosRequestConfig>) => {
+import { ApiResponseError } from 'interfaces/api';
+
+const ApiMiddleWare: Middleware<{}, RootState> = (_store) => {
+  const makeAction = (type: string, payload?: unknown) => ({
+    type,
+    payload,
+  });
+
+  return (next) => async (action: ReturnType<typeof apiAction>) => {
     if (action.type !== API_REQUEST) {
       return next(action);
     }
 
-    const { type, payload } = action.requestData;
-    const [Request, Response, Failure] = type;
+    const { types, payload, ...config } = action.payload;
+    const [RequestAction, ResponseAction, FailureAction] = types;
 
-    next({ type: Request, payload });
+    next(makeAction(RequestAction, payload));
 
-    return Api<ComicsData>(payload)
-      .then((response) => {
-        return next({
-          type: Response,
-          response: response
-        });
-      })
-      .catch(error => {
-        return next({
-          type: Failure,
-          error: error,
-        });
-      });
+    try {
+      const response = await Api(config);
+      return next(makeAction(ResponseAction, response));
+    } catch (error) {
+      const { response } = error as AxiosError;
+      const errorMessage = response?.data.message
+        || response?.data.errorMessage
+        || 'Произошла ошибка в запросе';
+
+      const errorPayload: ApiResponseError = {
+        code: response?.data.code || 400,
+        status: response?.status?.toString() || 'fail',
+        message: errorMessage,
+      };
+
+      return next(makeAction(FailureAction, errorPayload));
+    }
   };
+};
 
 export default ApiMiddleWare;

@@ -1,1 +1,0 @@
-export * as comicsAction from './comicsAction';
