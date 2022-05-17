@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
-import store from 'store';
+import { store } from 'store';
 import Main from 'pages/Main';
 import GlobalStyle from 'themes/GlobalStyle';
 import ThemesProvider from 'themes/ThemesProvider';

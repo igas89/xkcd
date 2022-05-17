@@ -23,8 +23,6 @@ const StyledButton = styled.button`
   `};
 
   &:disabled {
-    /* background: linear-gradient(0deg,#54575d 40%,#747980 90%); */
-    /* box-shadow: none; */
     opacity: 0.5;
     cursor: default;
   }

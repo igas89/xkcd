@@ -7,7 +7,7 @@ import Content from 'pages/Content';
 
 import { LoadingContext, LoadingContextType } from 'context/loadingContext';
 
-const StyledContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-flow: column nowrap;
   width: 900px;
@@ -25,11 +25,11 @@ const Main: FC = () => {
 
   return (
     <LoadingContext.Provider value={providerValues}>
-      <StyledContainer>
+      <Container>
         <Header />
         <Navigation />
         <Content />
-      </StyledContainer>
+      </Container>
     </LoadingContext.Provider>
   );
 };

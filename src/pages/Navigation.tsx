@@ -1,29 +1,16 @@
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components/macro';
 
 import Button from 'components/Button';
 import { LoadingContext } from 'context/loadingContext';
 
-import { useComicsSelector } from 'hooks/useComicsSelector';
-import { useComicsCountSelector } from 'hooks/useComicsCountSelector';
+import { ComicsCountRequest } from 'interfaces/comicsModel';
 
-import {
-  fetchComics,
-  FetchComics,
-  COMICS_REQUEST,
-  COMICS_SUCCESS,
-  COMICS_FAILURE,
-} from 'actions/comicsAction';
+import { useGetComics } from 'hooks/useGetComics';
+import { useGetComicsCount } from 'hooks/useGetComicsCount';
 
-import {
-  fetchComicsCount,
-  COMICS_COUNT_SUCCESS,
-  COMICS_COUNT_FAILURE,
-} from 'actions/comicsCountAction';
-
-const StyledContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-flow: nowrap;
   justify-content: space-around;
@@ -35,14 +22,13 @@ const StyledContainer = styled.div`
 `;
 
 type ButtonEvent = React.MouseEvent<HTMLButtonElement>;
-type ReturnFetchComics = ReturnType<FetchComics>;
 
 interface PagesState {
-  current: number | null;
-  first: number | null;
-  last: number | null;
-  prev: number | null;
-  next: number | null;
+  current?: number;
+  first?: number;
+  last?: number;
+  prev?: number;
+  next?: number;
 }
 
 interface NavigationState {
@@ -50,12 +36,25 @@ interface NavigationState {
   isComicsLoading: boolean;
   isComicsCountLoading: boolean;
 }
+
 const Navigation: FC = () => {
   const history = useHistory();
-  const dispatch = useDispatch();
   const { isLoading: contextLoading, setLoading } = useContext(LoadingContext);
-  const { comicsAction, comicsData } = useComicsSelector();
-  const { comicsCountAction, comicsCountData } = useComicsCountSelector();
+  const {
+    fetchComics,
+    comicsState: {
+      isFetching: isFetchingComics,
+      response: comicsData,
+    }
+  } = useGetComics();
+
+  const {
+    fetchComicsCount,
+    comicsCountState: {
+      isFetching: isFetchingComicsCount,
+      response: comicsCountData,
+    }
+  } = useGetComicsCount();
 
   const [navState, setNavState] = useState<NavigationState>({
     isMount: false,
@@ -63,51 +62,38 @@ const Navigation: FC = () => {
     isComicsCountLoading: false,
   });
 
-  const [pages, setPagesState] = useState<PagesState>({
-    current: null,
-    first: null,
-    last: null,
-    prev: null,
-    next: null,
-  });
+  const [pages, setPagesState] = useState<PagesState>({});
 
-  const dispatchAction = useCallback((actionType: ReturnFetchComics): void => {
-    if (navState.isComicsLoading || comicsAction === COMICS_REQUEST) {
-      return;
-    }
-
-    setNavState(prevState => ({
-      ...prevState,
-      isComicsLoading: true,
-    }));
-
-    dispatch(actionType);
-  }, [dispatch, comicsAction, navState.isComicsLoading]);
-
-  const setLink = useCallback((num: string | number) => {
+  const setLink = (num: string | number) => {
     history.push(`/comics/${num}`);
-  }, [history]);
+  };
 
-  const onClickFetchComics = useCallback((num?: number | null) => () => {
-    setLink(num as number);
+  const onClickFetchComics = (num?: number) => () => {
     setLoading(true);
-    dispatchAction(fetchComics(num as number));
-  }, [dispatchAction, setLink, setLoading]);
+    setLink(num as number);
 
-  const onClickRandom = useCallback((event: ButtonEvent) => {
+    fetchComics({
+      num: num as number,
+    });
+  };
+
+  const onClickRandom = (_event: ButtonEvent): void => {
     if (!comicsCountData) {
       return;
     }
 
-    const count = comicsCountData;
-    const numComic = Math.floor((Math.random() * count) + 1);
+    const counts = comicsCountData.counts;
+    const numComic = Math.floor((Math.random() * counts) + 1);
 
-    setLink(numComic as number);
     setLoading(true);
-    dispatchAction(fetchComics(numComic));
-  }, [comicsCountData, setLink, setLoading, dispatchAction]);
+    setLink(numComic as number);
 
-  const getPage = useCallback((): number | 'latest' => {
+    fetchComics({
+      num: numComic,
+    });
+  };
+
+  const getPage = useCallback((): ComicsCountRequest['num'] => {
     const { pathname } = history.location;
     const page = pathname === '/'
       ? 'latest'
@@ -121,78 +107,61 @@ const Navigation: FC = () => {
       return;
     }
 
+    setLoading(true);
+
     // Запрашиваем кол-во комиксов
-    dispatch(fetchComicsCount());
+    fetchComicsCount();
+
+    const page = getPage();
+
+    if (page !== 'latest') {
+      fetchComics({
+        num: page,
+      });
+    }
 
     setNavState((prevState) => ({
       ...prevState,
       isMount: true,
-      isComicsCountLoading: true,
     }));
-  }, [navState.isMount, getPage, dispatch]);
+  }, [
+    fetchComics,
+    fetchComicsCount,
+    navState.isMount,
+    getPage,
+    setLoading,
+  ]);
 
   useEffect(() => {
-    if (navState.isComicsLoading && comicsAction === COMICS_SUCCESS) {
+    if (!isFetchingComics && !isFetchingComicsCount && comicsData && comicsCountData) {
       const current = comicsData.num;
       const next = current + 1;
       const prev = current - 1;
-
-      setNavState(prevState => ({
-        ...prevState,
-        isComicsLoading: false,
-      }));
+      const counts = comicsCountData.counts;
 
       setPagesState((prevState) => ({
         ...prevState,
         current,
         first: 1,
-        next: next <= (comicsCountData as number) ? next : null,
-        prev: prev || null,
-        last: comicsCountData,
-      }));
-    }
-
-    if (navState.isComicsCountLoading && comicsCountAction === COMICS_COUNT_SUCCESS) {
-      const page = getPage();
-      const isLatestPage = page === 'latest' || page === comicsCountData;
-
-      setNavState(prevState => ({
-        ...prevState,
-        isComicsLoading: true,
-        isComicsCountLoading: false,
-      }));
-
-      // выбираем только нумерованные и не последнюю
-      if (!isLatestPage) {
-        dispatch(fetchComics(page));
-      }
-    }
-
-    if (comicsAction === COMICS_FAILURE || comicsCountAction === COMICS_COUNT_FAILURE) {
-      setNavState(prevState => ({
-        ...prevState,
-        isComicsLoading: false,
-        isComicsCountLoading: false,
+        next: next <= (counts as number) ? next : undefined,
+        prev: prev,
+        last: counts,
       }));
     }
   }, [
-    comicsAction,
+    isFetchingComics,
+    isFetchingComicsCount,
     comicsData,
-    comicsCountAction,
     comicsCountData,
-    dispatch,
-    getPage,
-    navState.isComicsLoading,
-    navState.isComicsCountLoading,
   ]);
 
-  const isLoading = contextLoading || navState.isComicsLoading || navState.isComicsCountLoading;
+  const isLoading = contextLoading || isFetchingComics || isFetchingComicsCount;
 
   /* TODO: Btn disabled */
-  const firstBtnDisabled = isLoading || pages.first === null || pages.first === pages.current;
-  const prevBtnDisabled = isLoading || pages.prev === null;
-  const nextBtnDisabled = isLoading || pages.next === null;
-  const lastBtnDisabled = isLoading || pages.last === null || pages.last === pages.current;
+  const firstBtnDisabled = isLoading || pages.first === undefined || pages.first === pages.current;
+  const prevBtnDisabled = isLoading || pages.prev === undefined;
+  const nextBtnDisabled = isLoading || pages.next === undefined;
+  const lastBtnDisabled = isLoading || pages.last === undefined || pages.last === pages.current;
 
   /* TODO: Title */
   const BtnFirstTitle = !firstBtnDisabled ? `First: ${pages.first}` : '';
@@ -201,7 +170,7 @@ const Navigation: FC = () => {
   const BtnLastTitle = !lastBtnDisabled ? `Last: ${pages.last}` : '';
 
   return (
-    <StyledContainer>
+    <Container>
       <Button
         title={BtnFirstTitle}
         onClick={onClickFetchComics(pages.first)}
@@ -235,7 +204,7 @@ const Navigation: FC = () => {
       >
         {'>>'}
       </Button>
-    </StyledContainer>
+    </Container>
   );
 };
 

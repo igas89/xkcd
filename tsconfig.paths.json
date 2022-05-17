@@ -10,16 +10,16 @@
       "themes/*": ["src/themes/*"],
       "api": ["src/api"],
       "store": ["src/store"],
+      "store/*": ["src/store/*"],
       "actions": ["src/store/actions"],
       "actions/*": ["src/store/actions/*"],
-      "reducers": ["src/store/reducers"],
-      "reducers/*": ["src/store/reducers/*"],
       "helpers/*": ["src/helpers/*"],
       "hooks/*": ["src/hooks/*"],
       "components/*": ["src/components/*"],
       "pages/*": ["src/pages/*"],
       "middleware": ["src/middleware"],
-      "middleware/*": ["src/middleware/*"]
+      "middleware/*": ["src/middleware/*"],
+      "interfaces/*": ["src/interfaces/*"]
     }
   }
 }
