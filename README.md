@@ -1,8 +1,8 @@
 # Redesign xkcd
 
-### Редизайн сайта [xkcd](https://xkcd.com/)
+### Редизайн сайта [Redesign xkcd](https://xkcd-eosin.vercel.app/)
 
-### Demo [Redesign xkcd](https://xkcd-eosin.vercel.app/)
+### Оригинальный [xkcd](https://xkcd.com/)
 
 #### Используемый стэк:
 * Typesript
@@ -11,7 +11,7 @@
     * react-scripts
     * react-redux
 * Redux
-    * redux-thunk
+    * @reduxjs/toolkit
 * Styled Components
 * Axios
 
