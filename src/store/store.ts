@@ -21,5 +21,5 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof combineRootReducer>;
 export type AppStore = typeof store;
 export type AppState = ReturnType<AppStore['getState']>;
-export type AppDispatch = ReturnType<AppStore['dispatch']>;
+export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, unknown, Action>;
